@@ -1,33 +1,43 @@
 package com.example.movieapp.adapter
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.example.movieapp.databinding.MovieItemBinding
-import com.example.movieapp.model.Movie
-import com.example.movieapp.model.MovieResponse
-import com.squareup.picasso.Picasso
+import com.example.movieapp.R
+import com.example.movieapp.model.Result
+import kotlinx.android.synthetic.main.movie_item.view.*
 
-class MovieAdapter (private val movieList: ArrayList<Movie>): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MovieAdapter(private val movieList: List<Result>) :
+    RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
-    class MovieViewHolder(private val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
 
-        fun bind(movie: Movie) {
+        val res = root.context.resources
+        fun bind(movie: Result) {
+            root.textViewRating.text = movie.vote_average.toString()
+            root.imageViewMovie.setImageResource(movie.poster_path.toInt())
 
-            if (movie != null){
-                binding.textViewRating.text = movie.vote_average.toString()
+        }
 
-            }
-
+        companion object {
+            @LayoutRes
+            val LAYOUT = R.layout.movie_item
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        TODO("Not yet implemented")
+        val layoutInflater = LayoutInflater.from(parent.context).inflate(MovieViewHolder.LAYOUT, parent, false).let {
+            MovieViewHolder(it)
+        }
+
+        return layoutInflater
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val movie: Movie = movieList[position]
+        val movie: Result = movieList[position]
+        holder.bind(movie)
     }
 
     override fun getItemCount(): Int {
