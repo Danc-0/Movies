@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
@@ -13,26 +15,6 @@ import kotlinx.android.synthetic.main.movie_item.view.*
 
 class MovieAdapter(private val movieList: List<Result>) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-
-    class MovieViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
-
-        val res = root.context.resources
-        fun bind(movie: Result) {
-            root.textViewRating.text = movie.vote_average.toString()
-            val picasso = Picasso.get()
-            Log.d("TAG", "bind: ${movie.poster_path}")
-            val path = "https://image.tmdb.org/t/p/w500" + movie.poster_path
-            Log.d("TAG", "bind: $path")
-            picasso.load(path).into(root.imageViewMovie)
-//            root.imageViewMovie.setImageResource(movie.poster_path.toInt())
-
-        }
-
-        companion object {
-            @LayoutRes
-            val LAYOUT = R.layout.movie_item
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context).inflate(MovieViewHolder.LAYOUT, parent, false).let {
@@ -50,4 +32,30 @@ class MovieAdapter(private val movieList: List<Result>) :
     override fun getItemCount(): Int {
         return movieList.size
     }
+
+    class MovieViewHolder(private val root: View) : RecyclerView.ViewHolder(root), View.OnClickListener {
+
+        val res = root.context.resources
+
+        fun bind(movie: Result) {
+            root.textViewRating.text = movie.vote_average.toString()
+            val picasso = Picasso.get()
+            val path = "https://image.tmdb.org/t/p/w500" + movie.poster_path
+            picasso.load(path).into(root.imageViewMovie)
+
+            itemView.setOnClickListener(this)
+
+        }
+
+        companion object {
+            @LayoutRes
+            val LAYOUT = R.layout.movie_item
+        }
+
+        override fun onClick(v: View?) {
+            Toast.makeText(v?.context, "hoeloeloe", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
 }
