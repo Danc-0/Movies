@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieapp.datasource.Resource
+import com.example.movieapp.data.datasource.Resource
 import com.example.movieapp.model.MoviesResponse
-import com.example.movieapp.repository.MovieRepository
+import com.example.movieapp.data.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

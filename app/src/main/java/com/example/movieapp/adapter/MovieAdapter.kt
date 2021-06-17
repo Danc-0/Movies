@@ -1,5 +1,6 @@
 package com.example.movieapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
 import com.example.movieapp.model.Result
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
 
 class MovieAdapter(private val movieList: List<Result>) :
@@ -17,7 +19,12 @@ class MovieAdapter(private val movieList: List<Result>) :
         val res = root.context.resources
         fun bind(movie: Result) {
             root.textViewRating.text = movie.vote_average.toString()
-            root.imageViewMovie.setImageResource(movie.poster_path.toInt())
+            val picasso = Picasso.get()
+            Log.d("TAG", "bind: ${movie.poster_path}")
+            val path = "https://image.tmdb.org/t/p/w500" + movie.poster_path
+            Log.d("TAG", "bind: $path")
+            picasso.load(path).into(root.imageViewMovie)
+//            root.imageViewMovie.setImageResource(movie.poster_path.toInt())
 
         }
 

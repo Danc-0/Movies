@@ -1,6 +1,6 @@
-package com.example.movieapp.repository
+package com.example.movieapp.data.repository
 
-import com.example.movieapp.datasource.ApiHelper
+import com.example.movieapp.data.datasource.ApiHelper
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(private val apiHelper: ApiHelper): BaseRepository() {

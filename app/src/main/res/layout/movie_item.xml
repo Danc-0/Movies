@@ -4,23 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardCornerRadius="4dp"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="4dp"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <ImageView
         android:id="@+id/imageViewMovie"
         android:layout_width="match_parent"
+        android:src="@color/black"
+        android:scaleType="fitCenter"
         android:layout_height="280dp" />
 
     <TextView
@@ -32,6 +33,9 @@
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingEnd="8dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:paddingBottom="4dp"
         android:textColor="@color/white" />
+
 </androidx.cardview.widget.CardView>

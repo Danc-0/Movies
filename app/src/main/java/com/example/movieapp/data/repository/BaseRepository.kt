@@ -1,7 +1,7 @@
-package com.example.movieapp.repository
+package com.example.movieapp.data.repository
 
 import android.util.Log
-import com.example.movieapp.datasource.Resource
+import com.example.movieapp.data.datasource.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException

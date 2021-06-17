@@ -1,4 +1,4 @@
-package com.example.movieapp.datasource
+package com.example.movieapp.data.datasource
 
 import okhttp3.ResponseBody
 

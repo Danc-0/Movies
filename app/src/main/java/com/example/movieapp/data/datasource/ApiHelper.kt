@@ -1,5 +1,6 @@
-package com.example.movieapp.datasource
+package com.example.movieapp.data.datasource
 
+import com.example.movieapp.api.ApiService
 import javax.inject.Inject
 
 class ApiHelper @Inject constructor(private val apiService: ApiService) {
