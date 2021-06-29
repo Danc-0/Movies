@@ -21,5 +21,12 @@ class SingleMovieFragment : Fragment(){
         return inflater.inflate(R.layout.fragment_single_movie, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val bundle = arguments
+        val result: Result? = bundle!!.getParcelable("MovieData")
+
+    }
 
 }

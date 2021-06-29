@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.movieapp.R
 import com.example.movieapp.ViewModel.MovieViewModel
@@ -22,7 +23,7 @@ import okhttp3.ResponseBody
 
 @AndroidEntryPoint
 @FragmentScoped
-class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener{
+class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener {
 
     private val TAG = "MainFragment"
     private val viewModel by viewModels<MovieViewModel>()
@@ -45,17 +46,19 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
                         val gridLayoutManager = GridLayoutManager(requireContext(), 2)
 
-                        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                            override fun getSpanSize(position: Int): Int {
-                                val viewType = movieAdapter.getItemViewType(position)
-                                return 2
+                        gridLayoutManager.spanSizeLookup =
+                            object : GridLayoutManager.SpanSizeLookup() {
+                                override fun getSpanSize(position: Int): Int {
+                                    val viewType = movieAdapter.getItemViewType(position)
+                                    return 2
 
+                                }
                             }
-                        }
                         recyclerViewMovies.adapter = movieAdapter
                     }
 
-                    movieAdapter.apply {true
+                    movieAdapter.apply {
+                        true
                         notifyDataSetChanged()
                     }
                 }
@@ -73,6 +76,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
     override fun movieItemClicked(position: Int) {
         val movieItem: Result? = movieList?.get(position)
-        Toast.makeText(context, "Item is $movieItem", Toast.LENGTH_SHORT).show()
+        val bundle = Bundle()
+        bundle.putParcelable("MovieData", movieItem)
+        Navigation.findNavController(requireView()).navigate(R.id.to_singleMovieFragment, bundle)
+
     }
 }
