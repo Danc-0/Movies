@@ -13,13 +13,17 @@ import com.example.movieapp.model.Result
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class MovieAdapter(private val movieList: List<Result>) :
+class MovieAdapter(
+    private val movieList: List<Result>,
+    private val onItemClickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context).inflate(MovieViewHolder.LAYOUT, parent, false).let {
-            MovieViewHolder(it)
-        }
+        val layoutInflater =
+            LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false).let {
+                MovieViewHolder(it)
+            }
 
         return layoutInflater
     }
@@ -33,29 +37,36 @@ class MovieAdapter(private val movieList: List<Result>) :
         return movieList.size
     }
 
-    class MovieViewHolder(private val root: View) : RecyclerView.ViewHolder(root), View.OnClickListener {
+    inner class MovieViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
 
-        val res = root.context.resources
+        val res = itemView.context.resources
+        val result = Result
 
         fun bind(movie: Result) {
-            root.textViewRating.text = movie.vote_average.toString()
+            itemView.textViewRating.text = movie.vote_average.toString()
             val picasso = Picasso.get()
             val path = "https://image.tmdb.org/t/p/w500" + movie.poster_path
-            picasso.load(path).into(root.imageViewMovie)
-
-            itemView.setOnClickListener(this)
+            picasso.load(path).into(itemView.imageViewMovie)
 
         }
 
-        companion object {
-            @LayoutRes
-            val LAYOUT = R.layout.movie_item
+        init {
+            itemView.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            Toast.makeText(v?.context, "hoeloeloe", Toast.LENGTH_SHORT).show()
+            val position = adapterPosition
+
+            if (position != RecyclerView.NO_POSITION) {
+                onItemClickListener.movieItemClicked(position)
+            }
         }
 
+    }
+
+    interface OnItemClickListener {
+        fun movieItemClicked(position: Int)
     }
 
 }

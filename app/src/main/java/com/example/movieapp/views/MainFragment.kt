@@ -1,6 +1,7 @@
 package com.example.movieapp.views
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
@@ -21,11 +22,12 @@ import okhttp3.ResponseBody
 
 @AndroidEntryPoint
 @FragmentScoped
-class MainFragment : Fragment(R.layout.fragment_main) {
+class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener{
 
     private val TAG = "MainFragment"
     private val viewModel by viewModels<MovieViewModel>()
     private lateinit var movieAdapter: MovieAdapter
+    var movieList: List<Result>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,8 +39,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 is Resource.Success -> {
                     lifecycleScope.launch {
 
-                        val movieList: List<Result> = it.value.results
-                        movieAdapter = MovieAdapter(movieList)
+                        movieList = it.value.results
+                        movieAdapter = MovieAdapter(movieList!!, this@MainFragment)
                         recyclerViewMovies.setHasFixedSize(true)
 
                         val gridLayoutManager = GridLayoutManager(requireContext(), 2)
@@ -67,5 +69,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
         })
+    }
+
+    override fun movieItemClicked(position: Int) {
+        val movieItem: Result? = movieList?.get(position)
+        Toast.makeText(context, "Item is $movieItem", Toast.LENGTH_SHORT).show()
     }
 }
