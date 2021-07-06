@@ -103,19 +103,43 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/release"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Release Date:"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/movieName" />
+
+                <TextView
+                    android:id="@+id/releaseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/15/20/2021"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_marginStart="5dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/release"
+                    app:layout_constraintStart_toEndOf="@id/release"
+                    app:layout_constraintTop_toTopOf="@+id/release" />
+
+                <TextView
                     android:id="@+id/director"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Director:"
+                    android:text="Popularity:"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/movieName" />
+                    app:layout_constraintTop_toBottomOf="@+id/release" />
 
                 <TextView
-                    android:id="@+id/directorName"
+                    android:id="@+id/popularityNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Movie Instructor"
@@ -134,9 +158,9 @@
                     android:layout_height="15dp"
                     android:layout_marginStart="15dp"
                     android:background="@color/lightGrey"
-                    app:layout_constraintBottom_toBottomOf="@+id/directorName"
-                    app:layout_constraintStart_toEndOf="@id/directorName"
-                    app:layout_constraintTop_toTopOf="@+id/directorName" />
+                    app:layout_constraintBottom_toBottomOf="@+id/popularityNumber"
+                    app:layout_constraintStart_toEndOf="@id/popularityNumber"
+                    app:layout_constraintTop_toTopOf="@+id/popularityNumber" />
 
                 <TextView
                     android:id="@+id/rating"

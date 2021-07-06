@@ -10,4 +10,9 @@ class ApiHelper @Inject constructor(private val apiService: ApiService) {
         1
     )
 
+    suspend fun getMoviesGenre() = apiService.getMovieGenreList(
+        "8ed700250305de124bef08dbb686472a",
+        "en-US"
+    )
+
 }

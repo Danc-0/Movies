@@ -10,7 +10,7 @@
         android:id="@+id/mainFragment"
         android:name="com.example.movieapp.views.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_main">
 
         <action
             android:id="@+id/to_singleMovieFragment"
