@@ -37,9 +37,9 @@ class MovieViewModel @Inject constructor(private val repository: MovieRepository
     fun getMoviesGenre() {
         viewModelScope.launch {
 
-            _myMovieResponse.value = Resource.Loading
+            _myMovieGenreResponse.value = Resource.Loading
 
-            _myMovieResponse.value = repository.getMovies()
+            _myMovieGenreResponse.value = repository.getMovieGenre()
         }
     }
 

@@ -28,7 +28,7 @@
             android:layout_height="280dp" />
 
         <TextView
-            android:id="@+id/textViewRating"
+            android:id="@+id/tvMovieCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"

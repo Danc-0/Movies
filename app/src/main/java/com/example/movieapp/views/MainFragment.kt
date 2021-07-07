@@ -10,10 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
 import com.example.movieapp.ViewModel.MovieViewModel
+import com.example.movieapp.adapter.CategoryAdapter
 import com.example.movieapp.adapter.MovieAdapter
 import com.example.movieapp.data.datasource.Resource
+import com.example.movieapp.model.Genre
 import com.example.movieapp.model.Result
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
@@ -28,7 +32,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
     private val TAG = "MainFragment"
     private val viewModel by viewModels<MovieViewModel>()
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
     var movieList: List<Result>? = null
+    var movieCategory: List<Genre>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,6 +78,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
             }
 
         })
+
+        movieGenres()
     }
 
     override fun movieItemClicked(position: Int) {
@@ -80,5 +88,42 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         bundle.putParcelable("MovieData", movieItem)
         Navigation.findNavController(requireView()).navigate(R.id.to_singleMovieFragment, bundle)
 
+    }
+
+    fun movieGenres(){
+        viewModel.getMoviesGenre()
+
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+
+            when(it) {
+
+                is Resource.Success -> {
+
+                    lifecycleScope.launch{
+                        Log.d(TAG, "movieGenres: ${it.value}")
+
+                        movieCategory = it.value.genres
+
+                        categoryAdapter = CategoryAdapter(movieCategory!!)
+                        recyclerViewMovies.setHasFixedSize(true)
+
+                        RvCategories.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+                        RvCategories.adapter = categoryAdapter
+                    }
+
+                    categoryAdapter.apply {
+                        true
+                        notifyDataSetChanged()
+                    }
+
+                }
+
+                is Resource.Failure -> {
+
+                }
+            }
+
+        })
     }
 }
