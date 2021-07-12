@@ -15,4 +15,10 @@ class MovieRepository @Inject constructor(private val apiHelper: ApiHelper): Bas
             apiHelper.getMoviesGenre()
         }
 
+    suspend fun getTVGenre() =
+        safeApiCall {
+            apiHelper.getTVGenre()
+        }
+
+
 }

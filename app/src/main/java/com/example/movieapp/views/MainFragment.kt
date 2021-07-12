@@ -2,13 +2,13 @@ package com.example.movieapp.views
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +24,7 @@ import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
+import java.util.*
 
 @AndroidEntryPoint
 @FragmentScoped
@@ -80,13 +81,19 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         })
 
         movieGenres()
+
+        greetingsMessage()
+
+        seeAll.setOnClickListener {
+            findNavController(requireView()).navigate(R.id.to_allCategoriesFragment)
+        }
     }
 
     override fun movieItemClicked(position: Int) {
         val movieItem: Result? = movieList?.get(position)
         val bundle = Bundle()
         bundle.putParcelable("MovieData", movieItem)
-        Navigation.findNavController(requireView()).navigate(R.id.to_singleMovieFragment, bundle)
+        findNavController(requireView()).navigate(R.id.to_singleMovieFragment, bundle)
 
     }
 
@@ -125,5 +132,21 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
             }
 
         })
+    }
+
+    fun greetingsMessage(){
+        val c: Calendar = Calendar.getInstance()
+        val timeOfDay: Int = c.get(Calendar.HOUR_OF_DAY)
+        var greeting: String? = null
+
+        if (timeOfDay >= 0 && timeOfDay < 12) {
+            greeting = "Good Morning,"
+        } else if (timeOfDay >= 12 && timeOfDay < 16) {
+            greeting = "Good Afternoon,"
+        } else if (timeOfDay >= 16 && timeOfDay < 24) {
+            greeting = "Good Evening,"
+        }
+
+        dayTag.text = greeting
     }
 }

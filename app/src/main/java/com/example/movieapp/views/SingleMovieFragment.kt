@@ -57,6 +57,7 @@ class SingleMovieFragment : Fragment(){
         popularityNumber.text = result?.popularity.toString()
         synopsis.text = result?.overview
         rating.text = result?.vote_average.toString()
+        language.text = result?.original_language
 
         val floatRate: Double? = result?.vote_average
         star.rating = floatRate?.toFloat()!!

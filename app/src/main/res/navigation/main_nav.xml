@@ -19,6 +19,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_allCategoriesFragment"
+            app:destination="@id/allCategoriesFragment" />
 
     </fragment>
 
@@ -27,5 +30,10 @@
         android:name="com.example.movieapp.views.SingleMovieFragment"
         android:label="fragment_single_movie"
         tools:layout="@layout/fragment_single_movie" />
+    <fragment
+        android:id="@+id/allCategoriesFragment"
+        android:name="com.example.movieapp.views.AllCategoriesFragment"
+        android:label="fragment_all_categories"
+        tools:layout="@layout/fragment_all_categories" />
 
 </navigation>
