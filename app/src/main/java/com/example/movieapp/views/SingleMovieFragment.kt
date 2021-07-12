@@ -68,6 +68,7 @@ class SingleMovieFragment : Fragment(){
         movieGenres()
 
         relatedMovies.setOnClickListener {
+            Toast.makeText(context, "Hey", Toast.LENGTH_SHORT).show()
             Navigation.findNavController(requireView()).navigate(R.id.to_relatedMoviesFragment)
         }
 
