@@ -10,6 +10,7 @@ import android.widget.RatingBar
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.example.movieapp.R
 import com.example.movieapp.ViewModel.MovieViewModel
 import com.example.movieapp.ViewModel.SingleMovieViewModel
@@ -63,9 +64,13 @@ class SingleMovieFragment : Fragment(){
         star.rating = floatRate?.toFloat()!!
 
         movieGenreIDs = result?.genre_ids
-        Log.d(TAG, "onViewCreated: $movieGenreIDs")
 
         movieGenres()
+
+        relatedMovies.setOnClickListener {
+            Navigation.findNavController(requireView()).navigate(R.id.to_relatedMoviesFragment)
+        }
+
 
     }
 

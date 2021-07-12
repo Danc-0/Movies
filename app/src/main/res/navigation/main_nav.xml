@@ -29,11 +29,20 @@
         android:id="@+id/singleMovieFragment"
         android:name="com.example.movieapp.views.SingleMovieFragment"
         android:label="fragment_single_movie"
-        tools:layout="@layout/fragment_single_movie" />
+        tools:layout="@layout/fragment_single_movie" >
+        <action
+            android:id="@+id/to_relatedMoviesFragment"
+            app:destination="@id/relatedMoviesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/allCategoriesFragment"
         android:name="com.example.movieapp.views.AllCategoriesFragment"
         android:label="fragment_all_categories"
         tools:layout="@layout/fragment_all_categories" />
+    <fragment
+        android:id="@+id/relatedMoviesFragment"
+        android:name="com.example.movieapp.views.RelatedMoviesFragment"
+        android:label="fragment_related_movies"
+        tools:layout="@layout/fragment_related_movies" />
 
 </navigation>
