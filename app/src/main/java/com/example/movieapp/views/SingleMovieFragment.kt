@@ -25,6 +25,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.android.synthetic.main.fragment_single_movie.*
 import kotlinx.android.synthetic.main.movie_item.view.*
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 @FragmentScoped
@@ -35,6 +36,7 @@ class SingleMovieFragment : Fragment(){
     private val viewModel by viewModels<SingleMovieViewModel>()
     private var movieGenre: List<Genre>? = null
     private var movieGenreIDs: List<Int>? = null
+    private var genreIDs by Delegates.notNull<List<Int>>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,13 +65,16 @@ class SingleMovieFragment : Fragment(){
         val floatRate: Double? = result?.vote_average
         star.rating = floatRate?.toFloat()!!
 
+        genreIDs = result.genre_ids
+
         movieGenreIDs = result?.genre_ids
 
         movieGenres()
 
         relatedMovies.setOnClickListener {
-            Toast.makeText(context, "Hey", Toast.LENGTH_SHORT).show()
-            Navigation.findNavController(requireView()).navigate(R.id.to_relatedMoviesFragment)
+            val bundle = Bundle()
+            bundle.putParcelable("Main Movie", result)
+            Navigation.findNavController(requireView()).navigate(R.id.to_relatedMoviesFragment, bundle)
         }
 
 
@@ -86,7 +91,7 @@ class SingleMovieFragment : Fragment(){
                     lifecycleScope.launch {
                         movieGenre = it.value.genres
 
-                        Log.d("TAG", "movieGenres: $movieGenre")
+
                     }
 
                 }

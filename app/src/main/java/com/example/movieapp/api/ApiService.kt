@@ -1,10 +1,8 @@
 package com.example.movieapp.api
 
-import com.example.movieapp.model.Genre
-import com.example.movieapp.model.GenreTV
-import com.example.movieapp.model.MovieGenres
-import com.example.movieapp.model.MoviesResponse
+import com.example.movieapp.model.*
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -18,5 +16,7 @@ interface ApiService {
     @GET("genre/tv/list")
     suspend fun getTVListGenreList(@Query("api_key") api_key: String, @Query("language") language: String) : MovieGenres
 
+    @GET("movie/{movieID}/recommendations")
+    suspend fun getRecommendedMovieList(@Path("movieID") movieID: Int, @Query("api_key") api_key: String, @Query("language") language: String, @Query("page") pageNo: Int) : RecommendedMovieResponse
 
 }

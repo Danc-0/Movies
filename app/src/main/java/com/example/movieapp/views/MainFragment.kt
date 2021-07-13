@@ -112,7 +112,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
                         movieCategory = it.value.genres
 
                         categoryAdapter = CategoryAdapter(movieCategory!!)
-                        recyclerViewMovies.setHasFixedSize(true)
+                        RvCategories.setHasFixedSize(true)
 
                         RvCategories.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 

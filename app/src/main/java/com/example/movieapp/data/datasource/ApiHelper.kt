@@ -19,4 +19,11 @@ class ApiHelper @Inject constructor(private val apiService: ApiService) {
         "8ed700250305de124bef08dbb686472a",
         "en-US"
     )
+
+    suspend fun getMovieRecommendations(movieID: Int, pageNo: Int) = apiService.getRecommendedMovieList(
+        movieID,
+        "8ed700250305de124bef08dbb686472a",
+        "en-US",
+        pageNo
+    )
 }

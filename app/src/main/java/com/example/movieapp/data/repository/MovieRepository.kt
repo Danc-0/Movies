@@ -20,5 +20,10 @@ class MovieRepository @Inject constructor(private val apiHelper: ApiHelper): Bas
             apiHelper.getTVGenre()
         }
 
+    suspend fun getRecommendedMovies(movieID: Int, pageNo: Int) =
+        safeApiCall {
+            apiHelper.getMovieRecommendations(movieID, pageNo)
+        }
+
 
 }
