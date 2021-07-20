@@ -1,6 +1,7 @@
 package com.example.movieapp.views
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -43,6 +44,7 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
     private val viewModel by viewModels<RecommendedMovieViewModel>()
     private lateinit var relatedAdapter: RelatedMoviesAdapter
     var relatedMovies: List<ResultX>? = null
+    val sliderHandler: Handler = Handler()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,8 +58,6 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
         Picasso.get().load(path).into(mainImage)
 
         recommendedMovies(result!!.id, 1)
-
-        movieName.setOnClickListener({})
 
     }
 
@@ -74,7 +74,7 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
 
                         relatedMovies = it.value.results
 
-                        relatedAdapter = RelatedMoviesAdapter(relatedMovies!!, rvRelatedMovies )
+                        relatedAdapter = RelatedMoviesAdapter(relatedMovies!!, rvRelatedMovies)
 
                         rvRelatedMovies.adapter = relatedAdapter
                         rvRelatedMovies.clipToPadding = false
@@ -96,6 +96,15 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
                         compositePageTransformer.addTransformer(pageTrans)
                         rvRelatedMovies.setPageTransformer(compositePageTransformer)
 
+                        val pageClick = object : ViewPager2.OnPageChangeCallback() {
+                            override fun onPageScrollStateChanged(state: Int) {
+                                super.onPageScrollStateChanged(state)
+                                sliderHandler.removeCallbacks(sliderRunnable)
+                                sliderHandler.postDelayed(sliderRunnable, 3000)
+                            }
+                        }
+
+                        rvRelatedMovies.registerOnPageChangeCallback(pageClick)
                     }
 
                 }
@@ -108,6 +117,14 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
         })
     }
 
+    val sliderRunnable : Runnable = Runnable(){
+        run {
+            rvRelatedMovies.setCurrentItem(rvRelatedMovies.currentItem + 1)
+        }
+
+    }
+
+
     fun errorResponse(responseBody: ResponseBody?, view: TextView) {
         val error: String = ReadError().readError(responseBody)
         view.text = error
@@ -115,4 +132,13 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
 }
