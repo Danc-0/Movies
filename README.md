@@ -10,3 +10,4 @@ The Libraries am using in the Development of the whole Application.
 * ViewBinding
 * Navigation Component
 * ViewModel
+* VideoView
