@@ -4,12 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +15,7 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.example.movieapp.R
 import com.example.movieapp.ViewModel.RecommendedMovieViewModel
-import com.example.movieapp.adapter.CategoryAdapter
+import com.example.movieapp.adapter.MovieGenreAdapter
 import com.example.movieapp.adapter.RelatedMoviesAdapter
 import com.example.movieapp.data.datasource.Resource
 import com.example.movieapp.model.Genre
@@ -29,9 +25,7 @@ import com.example.movieapp.utils.ReadError
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_related_movies.*
-import kotlinx.android.synthetic.main.fragment_single_movie.*
 import kotlinx.android.synthetic.main.fragment_single_movie.movieName
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
@@ -43,6 +37,9 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
     private val TAG = "RelatedMoviesFragment"
     private val viewModel by viewModels<RecommendedMovieViewModel>()
     private lateinit var relatedAdapter: RelatedMoviesAdapter
+    private var movieGenre: List<Genre>? = null
+    private val genreList = arrayListOf<String>()
+    var result: Result? = null
     var relatedMovies: List<ResultX>? = null
     val sliderHandler: Handler = Handler()
 
@@ -50,14 +47,16 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
         super.onViewCreated(view, savedInstanceState)
 
         val bundle = arguments
-        val result: Result? = bundle!!.getParcelable("Main Movie")
+        result = bundle!!.getParcelable("Main Movie")
 
         movieName.text = result?.title
-//        releaseDate.text = result?.release_date
+        releaseDate.text = result?.release_date
         val path = "https://image.tmdb.org/t/p/w500${result?.poster_path}"
         Picasso.get().load(path).into(mainImage)
 
         recommendedMovies(result!!.id, 1)
+
+        movieGenres()
 
     }
 
@@ -124,7 +123,6 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
 
     }
 
-
     fun errorResponse(responseBody: ResponseBody?, view: TextView) {
         val error: String = ReadError().readError(responseBody)
         view.text = error
@@ -140,5 +138,45 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies) {
     override fun onResume() {
         super.onResume()
         sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
+    fun movieGenres() {
+        viewModel.getMoviesGenre()
+
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+
+            when(it) {
+
+                is Resource.Success -> {
+                    lifecycleScope.launch {
+                        movieGenre = it.value.genres
+
+                       for (genre in result?.genre_ids!!){
+
+                           for (genreDetails in movieGenre!!){
+                               if (genreDetails.id.equals(genre)){
+                                   genreList.add(genreDetails.name)
+
+                               }
+                           }
+                       }
+
+                    }
+
+                    Log.d(TAG, "movieGenres: $genreList")
+                    val adapter = MovieGenreAdapter(genreList)
+                    listGenre.adapter = adapter
+                    listGenre.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
+
+                }
+
+                is  Resource.Failure -> {
+
+                }
+
+            }
+
+        })
     }
 }
