@@ -53,7 +53,7 @@ class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPage
             Picasso.get().load(path).into(itemView.imageViewMovie)
             itemView.movieName.text = genre.title
             itemView.imgMoviePlayer.setOnClickListener {
-                callBack.startDialog(genre)
+                callBack.startDialog(itemView)
             }
         }
 
@@ -61,7 +61,7 @@ class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPage
     }
 
     interface CallBack {
-        fun startDialog(genre: ResultX);
+        fun startDialog(view: View);
     }
 
 //    val runnable: Runnable = Runnable() {

@@ -1,5 +1,6 @@
 package com.example.movieapp.views
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -26,6 +27,7 @@ import com.example.movieapp.model.Languages
 import com.example.movieapp.model.Result
 import com.example.movieapp.model.ResultX
 import com.example.movieapp.utils.ReadError
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
@@ -214,10 +216,17 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies), Relate
         })
     }
 
-    override fun startDialog(genre: ResultX) {
-        Toast.makeText(context, "Video is still a Work in Progress", Toast.LENGTH_SHORT).show()
+    override fun startDialog(view: View) {
+        val snackBar = Snackbar.make(view,"Video trailers is still a Work in Progress",
+            Snackbar.LENGTH_LONG
+        ).setAction("Action", null)
+        snackBar.setActionTextColor(Color.WHITE)
+        val snackBarView = snackBar.view
+        snackBarView.setBackgroundColor(Color.BLACK)
+        val textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+        textView.setTextColor(Color.WHITE)
+        snackBar.show()
 
-//        showCustomDialog()
     }
 
     private fun showCustomDialog() {
