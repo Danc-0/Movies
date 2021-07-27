@@ -25,5 +25,9 @@ class MovieRepository @Inject constructor(private val apiHelper: ApiHelper): Bas
             apiHelper.getMovieRecommendations(movieID, pageNo)
         }
 
+    suspend fun getLanguageList() =
+        safeApiCall {
+            apiHelper.getLanguageList()
+        }
 
 }

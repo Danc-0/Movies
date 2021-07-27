@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.movieapp.data.datasource.Resource
 import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.data.repository.MovieRepository
+import com.example.movieapp.model.Languages
 import com.example.movieapp.model.MovieGenres
 import com.example.movieapp.model.RecommendedMovieResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,17 +15,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecommendedMovieViewModel @Inject constructor(private val repository: MovieRepository) : ViewModel() {
+class RecommendedMovieViewModel @Inject constructor(private val repository: MovieRepository) :
+    ViewModel() {
 
-    val _myRecommendedMovieResponse: MutableLiveData<Resource<RecommendedMovieResponse>> = MutableLiveData()
+    val _myRecommendedMovieResponse: MutableLiveData<Resource<RecommendedMovieResponse>> =
+        MutableLiveData()
 
     val _myMovieGenreResponse: MutableLiveData<Resource<MovieGenres>> = MutableLiveData()
+
+    val _movieLanguages: MutableLiveData<Resource<Languages>> = MutableLiveData()
 
     val recommendedMovieResponse: LiveData<Resource<RecommendedMovieResponse>>
         get() = _myRecommendedMovieResponse
 
     val movieGenreResponse: LiveData<Resource<MovieGenres>>
         get() = _myMovieGenreResponse
+
+    val movieLanguages: LiveData<Resource<Languages>>
+        get() = _movieLanguages
 
     fun getRecommendedMovies(movieID: Int, pageNo: Int) {
         viewModelScope.launch {
@@ -41,6 +49,14 @@ class RecommendedMovieViewModel @Inject constructor(private val repository: Movi
             _myMovieGenreResponse.value = Resource.Loading
 
             _myMovieGenreResponse.value = repository.getMovieGenre()
+        }
+    }
+
+    fun getLanguages() {
+        viewModelScope.launch {
+            _movieLanguages.value = Resource.Loading
+
+            _movieLanguages.value = repository.getLanguageList()
         }
     }
 

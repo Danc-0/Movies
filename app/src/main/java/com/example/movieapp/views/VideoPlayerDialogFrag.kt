@@ -11,15 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.MediaController
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.movieapp.R
+import kotlinx.android.synthetic.main.custom_video_player.*
 import kotlinx.android.synthetic.main.related_movie_item.*
 import java.util.*
 
 class VideoPlayerDialogFrag: DialogFragment() {
 
-
-    // dialog view is created
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Objects.requireNonNull(dialog)?.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         return inflater.inflate(R.layout.custom_video_player,null,false)
@@ -28,17 +28,19 @@ class VideoPlayerDialogFrag: DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        playVideo()
 
     }
 
     fun playVideo(){
         val mediaController = MediaController(context)
-        mediaController.setAnchorView(videoView)
+        mediaController.setAnchorView(movieVideoView)
 
-        val movieUri: Uri = Uri.parse("")
-//        videoView.setMediaController(mediaController)
-//        videoView.setVideoURI(movieUri)
-//        videoView.start()
+        val movieUri: Uri = Uri.parse("https://www.youtube.com/watch?v=VT1CYvzoaBk")
+        movieVideoView.setMediaController(mediaController)
+        movieVideoView.setVideoURI(movieUri)
+        movieVideoView.requestFocus()
+        movieVideoView.start()
 
     }
 

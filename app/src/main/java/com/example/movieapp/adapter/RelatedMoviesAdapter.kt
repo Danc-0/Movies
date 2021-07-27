@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.related_movie_item.view.imageViewMovie
 import kotlinx.android.synthetic.main.single_category_item.view.*
 
 
-class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPager2: ViewPager2) :
+class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPager2: ViewPager2, private var callBack: CallBack) :
     RecyclerView.Adapter<RelatedMoviesAdapter.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -44,7 +44,7 @@ class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPage
         return list.size
     }
 
-    class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val res = itemView.context.resources
 
@@ -52,21 +52,16 @@ class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPage
             val path = "https://image.tmdb.org/t/p/w500" + genre.poster_path
             Picasso.get().load(path).into(itemView.imageViewMovie)
             itemView.movieName.text = genre.title
-            itemView.imageViewMovie.setOnClickListener {
-                showCustomDialog()
+            itemView.imgMoviePlayer.setOnClickListener {
+                callBack.startDialog(genre)
             }
         }
 
-        private fun showCustomDialog() {
-            val fragmentManager = (itemView.context as FragmentActivity).supportFragmentManager
-            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
 
-            val videoPlayerDialogFrag = VideoPlayerDialogFrag()
-            videoPlayerDialogFrag.show(fragmentTransaction, "Video_Player")
+    }
 
-
-        }
-
+    interface CallBack {
+        fun startDialog(genre: ResultX);
     }
 
 //    val runnable: Runnable = Runnable() {

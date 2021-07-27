@@ -26,4 +26,8 @@ class ApiHelper @Inject constructor(private val apiService: ApiService) {
         "en-US",
         pageNo
     )
+
+    suspend fun getLanguageList() = apiService.getLanguageList(
+        "8ed700250305de124bef08dbb686472a"
+    )
 }
