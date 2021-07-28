@@ -26,7 +26,7 @@ import okhttp3.ResponseBody
 
 @AndroidEntryPoint
 @FragmentScoped
-class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories) {
+class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), CategoryAdapter.CallBack {
 
     private val TAG = "AllCategoriesFragment"
     private val viewModel by viewModels<AllCategoriesViewModel>()
@@ -37,7 +37,7 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories) {
         super.onViewCreated(view, savedInstanceState)
 
         moviesGenre()
-        tvGenre()
+
 
     }
 
@@ -53,7 +53,7 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories) {
                     lifecycleScope.launch {
                         movieCategory = it.value.genres
 
-                        categoryAdapter = CategoryAdapter(movieCategory!!)
+                        categoryAdapter = CategoryAdapter(movieCategory!!, this@AllCategoriesFragment)
 
                         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
 
@@ -85,14 +85,7 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories) {
                 is Resource.Success -> {
 
                     lifecycleScope.launch {
-                        movieCategory = it.value.genres
 
-                        categoryAdapter = CategoryAdapter(movieCategory!!)
-
-                        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
-
-                        rvGenreTvList.layoutManager = gridLayoutManager
-                        rvGenreTvList.adapter = categoryAdapter
 
                     }
 
@@ -103,7 +96,7 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories) {
                 }
 
                 is Resource.Failure -> {
-                    errorResponse(it.errorBody, errorMsg)
+
                 }
 
             }
@@ -116,6 +109,10 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories) {
         view.text = error
         view.visibility = View.VISIBLE
 
+    }
+
+    override fun toGenreFrag() {
+        TODO("Not yet implemented")
     }
 
 }

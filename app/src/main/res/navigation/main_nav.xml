@@ -22,6 +22,9 @@
         <action
             android:id="@+id/to_allCategoriesFragment"
             app:destination="@id/allCategoriesFragment" />
+        <action
+            android:id="@+id/to_genresFragment"
+            app:destination="@id/genresFragment" />
 
     </fragment>
 
@@ -44,5 +47,10 @@
         android:name="com.example.movieapp.views.RelatedMoviesFragment"
         android:label="fragment_related_movies"
         tools:layout="@layout/fragment_related_movies" />
+    <fragment
+        android:id="@+id/genresFragment"
+        android:name="com.example.movieapp.views.GenresFragment"
+        android:label="fragment_genres"
+        tools:layout="@layout/fragment_genres" />
 
 </navigation>

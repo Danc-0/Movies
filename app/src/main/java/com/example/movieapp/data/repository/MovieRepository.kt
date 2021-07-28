@@ -30,4 +30,9 @@ class MovieRepository @Inject constructor(private val apiHelper: ApiHelper): Bas
             apiHelper.getLanguageList()
         }
 
+    suspend fun getMoviesByGenre(genre_id: Int) =
+        safeApiCall {
+            apiHelper.getMoviesByGenre(genre_id)
+        }
+
 }

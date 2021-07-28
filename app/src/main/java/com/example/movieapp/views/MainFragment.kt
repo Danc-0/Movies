@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,7 @@ import java.util.*
 
 @AndroidEntryPoint
 @FragmentScoped
-class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener {
+class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener, CategoryAdapter.CallBack {
 
     private val TAG = "MainFragment"
     private val viewModel by viewModels<MovieViewModel>()
@@ -111,7 +112,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
                         movieCategory = it.value.genres
 
-                        categoryAdapter = CategoryAdapter(movieCategory!!)
+                        categoryAdapter = CategoryAdapter(movieCategory!!, this@MainFragment)
                         RvCategories.setHasFixedSize(true)
 
                         RvCategories.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -148,5 +149,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         }
 
         dayTag.text = greeting
+    }
+
+    override fun toGenreFrag() {
+        findNavController(requireView()).navigate(R.id.to_genresFragment)
     }
 }

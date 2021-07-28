@@ -9,11 +9,11 @@ import com.example.movieapp.model.Genre
 import com.example.movieapp.model.Result
 import kotlinx.android.synthetic.main.single_category_item.view.*
 
-class CategoryAdapter(private val list: List<Genre>, private val callback: CallBack) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class ClassificationCategoryAdapter(private val list: List<Genre>) : RecyclerView.Adapter<ClassificationCategoryAdapter.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val layoutInflater =
-            LayoutInflater.from(parent.context).inflate(R.layout.single_category_item, parent, false).let {
+            LayoutInflater.from(parent.context).inflate(R.layout.classification_category_item, parent, false).let {
                 CategoryViewHolder(it)
             }
 
@@ -40,13 +40,8 @@ class CategoryAdapter(private val list: List<Genre>, private val callback: CallB
         }
 
         override fun onClick(v: View?) {
-            //Navigate
-            callback.toGenreFrag()
-        }
-    }
 
-     interface CallBack {
-        fun toGenreFrag()
+        }
     }
 
 }

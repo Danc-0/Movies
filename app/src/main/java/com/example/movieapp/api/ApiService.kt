@@ -38,4 +38,10 @@ interface ApiService {
         @Query("api_key") api_key: String
     ): Languages
 
+    @GET("discover/movie")
+    suspend fun getMoviesListByGenre(
+        @Query("api_key") api_key: String,
+        @Query("with_genres") genre_id: Int
+    ): GenredMovies
+
 }
