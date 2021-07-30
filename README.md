@@ -13,8 +13,8 @@ The Libraries am using in the Development of the whole Application.
 * VideoView
 
 # Screenshots
-![](images/firstscreen.jpg)
-![](images/secondscreen.jpg)
-![](images/thirdscreen.jpg)
-![](images/fourthscreen.jpg)
-![](images/fifthscreen.jpg)
+![Main Screen](images/firstscreen.jpg)
+![More On Single Movie](images/secondscreen.jpg)
+![Movie Classifications](images/thirdscreen.jpg)
+![Related Movies](images/fourthscreen.jpg)
+![Movie Categories](images/fifthscreen.jpg)
