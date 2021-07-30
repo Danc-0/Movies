@@ -3,13 +3,14 @@ package com.example.movieapp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
 import com.example.movieapp.model.Genre
 import com.example.movieapp.model.Result
 import kotlinx.android.synthetic.main.single_category_item.view.*
 
-class ClassificationCategoryAdapter(private val list: List<Genre>) : RecyclerView.Adapter<ClassificationCategoryAdapter.CategoryViewHolder>() {
+class ClassificationCategoryAdapter(private val list: List<Genre>, private val callBack: CallBack) : RecyclerView.Adapter<ClassificationCategoryAdapter.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val layoutInflater =
@@ -32,16 +33,21 @@ class ClassificationCategoryAdapter(private val list: List<Genre>) : RecyclerVie
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val res = itemView.context.resources
-        val result = Result
+        var result : Genre? = null
 
         fun bind(genre: Genre){
+            result = genre
             itemView.setOnClickListener(this)
             itemView.tvMovieCategory.text  = genre.name
         }
 
         override fun onClick(v: View?) {
-
+            callBack.sendId(result!!)
         }
+    }
+
+    interface CallBack {
+        fun sendId(genre: Genre)
     }
 
 }

@@ -13,8 +13,7 @@ import kotlinx.android.synthetic.main.movie_item.view.*
 import kotlinx.android.synthetic.main.movie_item.view.imageViewMovie
 
 class GenredMovieAdapter(
-    private val movieList: List<ResultXX>,
-    private val onItemClickListener: OnItemClickListener
+    private val movieList: List<ResultXX>
 ) :
     RecyclerView.Adapter<GenredMovieAdapter.MovieViewHolder>() {
 
@@ -37,8 +36,7 @@ class GenredMovieAdapter(
         return movieList.size
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         val res = itemView.context.resources
         var result :ResultXX? = null
@@ -51,18 +49,7 @@ class GenredMovieAdapter(
             itemView.movieName.text = movie.original_title
 
         }
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            onItemClickListener.movieItemClicked(result!!)
-        }
     }
 
-    interface OnItemClickListener {
-        fun movieItemClicked(movie: ResultXX)
-    }
 
 }

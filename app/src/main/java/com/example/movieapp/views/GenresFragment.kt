@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @FragmentScoped
-class GenresFragment : Fragment(R.layout.fragment_genres), GenredMovieAdapter.OnItemClickListener{
+class GenresFragment : Fragment(R.layout.fragment_genres), ClassificationCategoryAdapter.CallBack{
 
     private val TAG = "GenresFragment"
     private val viewModel by viewModels<SingleGenreViewModel>()
@@ -74,7 +74,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres), GenredMovieAdapter.On
 
                         movieCategory = it.value.genres
 
-                        singleCategory = ClassificationCategoryAdapter(movieCategory!!)
+                        singleCategory = ClassificationCategoryAdapter(movieCategory!!, this@GenresFragment)
                         firstCategories.setHasFixedSize(true)
 
                         firstCategories.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -109,7 +109,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres), GenredMovieAdapter.On
                     lifecycleScope.launch {
 
                         movieList = it.value.results
-                        movieAdapter = GenredMovieAdapter(movieList!!, this@GenresFragment)
+                        movieAdapter = GenredMovieAdapter(movieList!!)
                         genreBased.setHasFixedSize(true)
 
                         val gridLayoutManager = GridLayoutManager(requireContext(), 4)
@@ -132,8 +132,9 @@ class GenresFragment : Fragment(R.layout.fragment_genres), GenredMovieAdapter.On
         })
     }
 
-    override fun movieItemClicked(movie: ResultXX) {
-
+    override fun sendId(genre: Genre) {
+        getMovies(genre.id)
+        Toast.makeText(context, "Hello ${genre.name}", Toast.LENGTH_SHORT).show()
     }
 
 }

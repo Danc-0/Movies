@@ -52,5 +52,10 @@
         android:name="com.example.movieapp.views.GenresFragment"
         android:label="fragment_genres"
         tools:layout="@layout/fragment_genres" />
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.example.movieapp.views.StartFragment"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" />
 
 </navigation>
