@@ -14,3 +14,7 @@ The Libraries am using in the Development of the whole Application.
 
 # Screenshots
 ![](images/firstscreen.jpg)
+![](images/secondscreen.jpg)
+![](images/thirdscreen.jpg)
+![](images/fourthscreen.jpg)
+![](images/fifthscreen.jpg)
