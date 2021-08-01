@@ -1,12 +1,8 @@
 package com.example.movieapp.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
 import com.example.movieapp.model.Result
@@ -44,7 +40,7 @@ class MovieAdapter(
         val result = Result
 
         fun bind(movie: Result) {
-            itemView.textViewRating.text = movie.vote_average.toString()
+            itemView.tvMovieCategory.text = movie.vote_average.toString()
             val picasso = Picasso.get()
             val path = "https://image.tmdb.org/t/p/w500" + movie.poster_path
             picasso.load(path).into(itemView.imageViewMovie)

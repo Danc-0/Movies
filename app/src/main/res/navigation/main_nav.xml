@@ -10,7 +10,7 @@
         android:id="@+id/mainFragment"
         android:name="com.example.movieapp.views.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_main">
 
         <action
             android:id="@+id/to_singleMovieFragment"
@@ -19,6 +19,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_allCategoriesFragment"
+            app:destination="@id/allCategoriesFragment" />
+        <action
+            android:id="@+id/to_genresFragment"
+            app:destination="@id/genresFragment" />
 
     </fragment>
 
@@ -26,6 +32,30 @@
         android:id="@+id/singleMovieFragment"
         android:name="com.example.movieapp.views.SingleMovieFragment"
         android:label="fragment_single_movie"
-        tools:layout="@layout/fragment_single_movie" />
+        tools:layout="@layout/fragment_single_movie" >
+        <action
+            android:id="@+id/to_relatedMoviesFragment"
+            app:destination="@id/relatedMoviesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allCategoriesFragment"
+        android:name="com.example.movieapp.views.AllCategoriesFragment"
+        android:label="fragment_all_categories"
+        tools:layout="@layout/fragment_all_categories" />
+    <fragment
+        android:id="@+id/relatedMoviesFragment"
+        android:name="com.example.movieapp.views.RelatedMoviesFragment"
+        android:label="fragment_related_movies"
+        tools:layout="@layout/fragment_related_movies" />
+    <fragment
+        android:id="@+id/genresFragment"
+        android:name="com.example.movieapp.views.GenresFragment"
+        android:label="fragment_genres"
+        tools:layout="@layout/fragment_genres" />
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.example.movieapp.views.StartFragment"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" />
 
 </navigation>
