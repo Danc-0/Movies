@@ -13,6 +13,7 @@ import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movieapp.BuildConfig
 import com.example.movieapp.R
 import com.example.movieapp.ViewModel.MovieViewModel
 import com.example.movieapp.adapter.CategoryAdapter
