@@ -18,3 +18,7 @@ This is a short demo of how the application looks like
 
 |<img src="images/fifthscreen.jpg" width=200/>|
 |:----:|
+
+# Contributions
+
+Contibutions are welcomed. Feel free to add anything or remove anything that is unnecessary
