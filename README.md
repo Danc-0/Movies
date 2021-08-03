@@ -22,3 +22,7 @@ This is a short demo of how the application looks like
 # Contributions
 
 Contibutions are welcomed. Feel free to add anything or remove anything that is unnecessary
+
+# Support
+
+Give a ⭐ if you like the Project
