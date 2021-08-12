@@ -3,17 +3,20 @@ package com.example.movieapp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
+import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.model.Result
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
 
 class MovieAdapter(
+    diffCallback: DiffUtil.ItemCallback<MoviesResponse>,
     private val movieList: List<Result>,
     private val onItemClickListener: OnItemClickListener
-) :
-    RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+) : PagingDataAdapter<MoviesResponse, MovieAdapter.MovieViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater =
