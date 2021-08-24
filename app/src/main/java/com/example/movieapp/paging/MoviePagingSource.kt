@@ -1,5 +1,6 @@
 package com.example.movieapp.paging
 
+import android.net.Uri
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -17,51 +18,29 @@ class MoviePagingSource(
     private val apiKey: String
 ) : PagingSource<Int, Result>() {
 
-    // Called to asynchronously fetch more data to be displayed
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
-        val pageIndex = params.key ?: MOVIE_STARTING_PAGE_INDEX
-
         return try {
-            val response = apiService.getMovieList(
-                apiKey,
-                page = pageIndex
-            )
-            val movies = response.results
-            val nextKey =
-                if (movies.isEmpty()) {
-                    null
-                } else {
-                    // By default, initial load size = 3 * NETWORK PAGE SIZE
-                    // ensure we're not requesting duplicating items at the 2nd request
-                    pageIndex + (params.loadSize / 1)
-//                    pageIndex + (params.loadSize / NETWORK_PAGE_SIZE)
-                }
+            val nextPage: Int = params.key ?: FIRST_PAGE_INDEX
+            val response = apiService.getMovieList("15141", nextPage)
+
+            val responseList = mutableListOf<Result>()
+
+            val data = response.results ?: emptyList()
+            responseList.addAll(data)
+
+            val previousPage = if (nextPage == 1)
+                null else nextPage - 1
+
             LoadResult.Page(
-                data = movies,
-                prevKey = if (pageIndex == MOVIE_STARTING_PAGE_INDEX) null else pageIndex,
-                nextKey = nextKey
-            )
-
-        } catch (exception: IOException) {
-            return LoadResult.Error(exception)
-        } catch (exception: HttpException) {
-            return LoadResult.Error(exception)
+                data = responseList,
+                prevKey = previousPage,
+                nextKey = nextPage.plus(1))
         }
-
-    }
-
-    /**
-     * The refresh key is used for subsequent calls to PagingSource.Load after the initial load.
-     */
-    @ExperimentalPagingApi
-    override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
-        // We need to get the previous key (or next key if previous is null) of the page
-        // that was closest to the most recently accessed index.
-        // Anchor position is the most recently accessed index.
-        return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        catch (e: Exception) {
+            LoadResult.Error(e)
         }
     }
-
+    companion object {
+        private const val FIRST_PAGE_INDEX = 1
+    }
 }

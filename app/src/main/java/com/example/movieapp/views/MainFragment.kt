@@ -1,5 +1,8 @@
 package com.example.movieapp.views
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,6 +27,7 @@ import com.example.movieapp.model.Result
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import java.util.*
@@ -42,15 +46,21 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getMovies()
+        network()
+
         viewModel.movieResponse.observe(viewLifecycleOwner, {
 
             when (it) {
                 is Resource.Success -> {
                     lifecycleScope.launch {
 
-                        movieList = it.value.results
-                        movieAdapter = MovieAdapter(movieList!!, this@MainFragment)
+                        viewModel.getMovie("8ed700250305de124bef08dbb686472a").collect{
+
+                            Log.d(TAG, "onViewCreated: $it")
+                            movieAdapter = MovieAdapter( it,this@MainFragment)
+                        }
+
+
                         recyclerViewMovies.setHasFixedSize(true)
 
                         val gridLayoutManager = GridLayoutManager(requireContext(), 2)
@@ -88,6 +98,24 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
         seeAll.setOnClickListener {
             findNavController(requireView()).navigate(R.id.to_allCategoriesFragment)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        network()
+    }
+
+    fun network() {
+        val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
+
+        if (isConnected){
+            Toast.makeText(context, "You are back online enjoy", Toast.LENGTH_SHORT).show()
+        } else {
+            findNavController(requireView()).navigate(R.id.to_noInternetFragment)
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show()
         }
     }
 

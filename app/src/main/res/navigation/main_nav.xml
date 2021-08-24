@@ -25,6 +25,9 @@
         <action
             android:id="@+id/to_genresFragment"
             app:destination="@id/genresFragment" />
+        <action
+            android:id="@+id/to_noInternetFragment"
+            app:destination="@id/noInternetFragment" />
 
     </fragment>
 
@@ -57,5 +60,10 @@
         android:name="com.example.movieapp.views.StartFragment"
         android:label="fragment_start"
         tools:layout="@layout/fragment_start" />
+    <fragment
+        android:id="@+id/noInternetFragment"
+        android:name="com.example.movieapp.views.NoInternetFragment"
+        android:label="fragment_no_internet"
+        tools:layout="@layout/fragment_no_internet" />
 
 </navigation>

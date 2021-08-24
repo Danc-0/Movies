@@ -3,6 +3,8 @@ package com.example.movieapp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedList
+import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +15,10 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
 
 class MovieAdapter(
-    diffCallback: DiffUtil.ItemCallback<MoviesResponse>,
-    private val movieList: List<Result>,
+//    diffCallback: DiffUtil.ItemCallback<Result>,
+    private val movieList: PagingData<Result>,
     private val onItemClickListener: OnItemClickListener
-) : PagingDataAdapter<MoviesResponse, MovieAdapter.MovieViewHolder>(diffCallback) {
+) : PagingDataAdapter<Result, MovieAdapter.MovieViewHolder>(DiffUtilCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater =
@@ -28,24 +30,26 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val movie: Result = movieList[position]
+        val movie = getItem(position)
         holder.bind(movie)
     }
 
-    override fun getItemCount(): Int {
-        return movieList.size
-    }
+//    override fun getItemCount(): Int {
+////        return movieList
+//    }
 
-    inner class MovieViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
 
         val res = itemView.context.resources
         val result = Result
 
-        fun bind(movie: Result) {
-            itemView.tvMovieCategory.text = movie.vote_average.toString()
+        fun bind(movie: Result?) {
+            if (movie != null) {
+                itemView.tvMovieCategory.text = movie.vote_average.toString()
+            }
             val picasso = Picasso.get()
-            val path = "https://image.tmdb.org/t/p/w500" + movie.poster_path
+            val path = "https://image.tmdb.org/t/p/w500" + movie!!.poster_path
             picasso.load(path).into(itemView.imageViewMovie)
 
         }
@@ -66,6 +70,21 @@ class MovieAdapter(
 
     interface OnItemClickListener {
         fun movieItemClicked(position: Int)
+
     }
+
+    object  DiffUtilCallback: DiffUtil.ItemCallback<Result>() {
+        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
+            return oldItem.id == newItem.id
+                    && oldItem.id == newItem.id
+        }
+
+    }
+
+
 
 }
