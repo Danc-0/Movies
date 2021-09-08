@@ -8,36 +8,36 @@ import javax.inject.Inject
 
 class ApiHelper @Inject constructor(private val apiService: ApiService) {
 
-    val apiKey: String = BuildConfig.API_KEY
-
-    suspend fun getMovies() = apiService.getMovieList(
-        apiKey,
-        1
-    )
-
-    suspend fun getMoviesGenre() = apiService.getMovieGenreList(
-        apiKey,
-        "en-US"
-    )
-
-    suspend fun getTVGenre() = apiService.getTVListGenreList(
-        apiKey,
-        "en-US"
-    )
-
-    suspend fun getMovieRecommendations(movieID: Int, pageNo: Int) = apiService.getRecommendedMovieList(
-        movieID,
-        apiKey,
-        "en-US",
-        pageNo
-    )
-
-    suspend fun getLanguageList() = apiService.getLanguageList(
-        apiKey
-    )
-
-    suspend fun getMoviesByGenre(genre_id: Int) = apiService.getMoviesListByGenre(
-        apiKey,
-        genre_id
-    )
+//    val apiKey: String = BuildConfig.API_KEY
+//
+//    suspend fun getMovies(apiKey: String, nextPage: Int) = apiService.getMovieList(
+//        apiKey,
+//        nextPage
+//    )
+//
+//    suspend fun getMoviesGenre() = apiService.getMovieGenreList(
+//        apiKey,
+//        "en-US"
+//    )
+//
+//    suspend fun getTVGenre() = apiService.getTVListGenreList(
+//        apiKey,
+//        "en-US"
+//    )
+//
+//    suspend fun getMovieRecommendations(movieID: Int, pageNo: Int) = apiService.getRecommendedMovieList(
+//        movieID,
+//        apiKey,
+//        "en-US",
+//        pageNo
+//    )
+//
+//    suspend fun getLanguageList() = apiService.getLanguageList(
+//        apiKey
+//    )
+//
+//    suspend fun getMoviesByGenre(genre_id: Int) = apiService.getMoviesListByGenre(
+//        apiKey,
+//        genre_id
+//    )
 }

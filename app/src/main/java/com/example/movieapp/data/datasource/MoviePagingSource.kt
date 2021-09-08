@@ -1,10 +1,11 @@
-package com.example.movieapp.paging
+package com.example.movieapp.data.datasource
 
 import android.net.Uri
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.movieapp.api.ApiService
+import com.example.movieapp.data.datasource.ApiHelper
 import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.model.Result
 import retrofit2.HttpException
@@ -21,7 +22,8 @@ class MoviePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
         return try {
             val nextPage: Int = params.key ?: FIRST_PAGE_INDEX
-            val response = apiService.getMovieList("15141", nextPage)
+
+            val response = apiService.getMovieList(apiKey, nextPage)
 
             val responseList = mutableListOf<Result>()
 
@@ -33,14 +35,23 @@ class MoviePagingSource(
 
             LoadResult.Page(
                 data = responseList,
-                prevKey = previousPage,
-                nextKey = nextPage.plus(1))
-        }
-        catch (e: Exception) {
+                prevKey = null,
+                nextKey = nextPage.plus(1)
+            )
+        } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }
+
     companion object {
         private const val FIRST_PAGE_INDEX = 1
+    }
+
+    @ExperimentalPagingApi
+    override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
     }
 }

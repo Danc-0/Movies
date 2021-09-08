@@ -9,6 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.movieapp.api.ApiService
+import com.example.movieapp.data.datasource.ApiHelper
 import com.example.movieapp.data.datasource.Resource
 import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.data.repository.MovieRepository
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val repository: MovieRepository, private val apiService: ApiService) : ViewModel() {
+class MovieViewModel @Inject constructor(private val repository: MovieRepository, private val apiHelper: ApiService) : ViewModel() {
 
     val _myMovieResponse: MutableLiveData<Resource<MoviesResponse>> = MutableLiveData()
 
@@ -45,7 +46,7 @@ class MovieViewModel @Inject constructor(private val repository: MovieRepository
 
     fun getMovie(apiKey: String): Flow<PagingData<Result>> {
         return Pager (config = PagingConfig(pageSize = 500, maxSize = 10000),
-            pagingSourceFactory = {(MoviePagingSource(apiService, apiKey = apiKey))}).flow.cachedIn(viewModelScope)
+            pagingSourceFactory = {(MoviePagingSource(apiHelper, apiKey = apiKey))}).flow.cachedIn(viewModelScope)
     }
 
     fun getMoviesGenre() {
@@ -53,7 +54,7 @@ class MovieViewModel @Inject constructor(private val repository: MovieRepository
 
             _myMovieGenreResponse.value = Resource.Loading
 
-            _myMovieGenreResponse.value = repository.getMovieGenre()
+            _myMovieGenreResponse.value = repository.getMovieGenre("en-US")
         }
     }
 

@@ -39,7 +39,7 @@ class RecommendedMovieViewModel @Inject constructor(private val repository: Movi
 
             _myRecommendedMovieResponse.value = Resource.Loading
 
-            _myRecommendedMovieResponse.value = repository.getRecommendedMovies(movieID, pageNo)
+            _myRecommendedMovieResponse.value = repository.getRecommendedMovies(movieID, pageNo, "en-US")
         }
     }
 
@@ -48,7 +48,7 @@ class RecommendedMovieViewModel @Inject constructor(private val repository: Movi
 
             _myMovieGenreResponse.value = Resource.Loading
 
-            _myMovieGenreResponse.value = repository.getMovieGenre()
+            _myMovieGenreResponse.value = repository.getMovieGenre("en-US")
         }
     }
 

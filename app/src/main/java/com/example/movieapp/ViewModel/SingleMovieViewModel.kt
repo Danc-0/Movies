@@ -26,7 +26,7 @@ class SingleMovieViewModel @Inject constructor(private val repository: MovieRepo
 
             _myMovieGenreResponse.value = Resource.Loading
 
-            _myMovieGenreResponse.value = repository.getMovieGenre()
+            _myMovieGenreResponse.value = repository.getMovieGenre("en-US")
         }
     }
 

@@ -1,38 +1,46 @@
 package com.example.movieapp.data.repository
 
+import android.util.Log
+import com.example.movieapp.BuildConfig
+import com.example.movieapp.api.ApiService
 import com.example.movieapp.data.datasource.ApiHelper
+import com.example.movieapp.model.MoviesResponse
+import retrofit2.http.Query
 import javax.inject.Inject
 
-class MovieRepository @Inject constructor(private val apiHelper: ApiHelper): BaseRepository() {
+class MovieRepository @Inject constructor(private val apiService: ApiService) : BaseRepository() {
 
-    suspend fun getMovies() =
+    val apiKey: String = BuildConfig.API_KEY
+
+    suspend fun getMovies(nextPage: Int) =
         safeApiCall {
-            apiHelper.getMovies()
+            apiService.getMovieList(apiKey, nextPage)
         }
 
-    suspend fun getMovieGenre() =
+    suspend fun getMovieGenre(language: String) =
         safeApiCall {
-            apiHelper.getMoviesGenre()
+            apiService.getMovieGenreList(apiKey, language)
         }
 
-    suspend fun getTVGenre() =
+    suspend fun getTVGenre(language: String) =
         safeApiCall {
-            apiHelper.getTVGenre()
+            apiService.getTVListGenreList(apiKey, language)
         }
 
-    suspend fun getRecommendedMovies(movieID: Int, pageNo: Int) =
+    suspend fun getRecommendedMovies(movieID: Int, pageNo: Int,
+    language: String) =
         safeApiCall {
-            apiHelper.getMovieRecommendations(movieID, pageNo)
+            apiService.getRecommendedMovieList(movieID, apiKey, language, pageNo)
         }
 
     suspend fun getLanguageList() =
         safeApiCall {
-            apiHelper.getLanguageList()
+            apiService.getLanguageList(apiKey)
         }
 
     suspend fun getMoviesByGenre(genre_id: Int) =
         safeApiCall {
-            apiHelper.getMoviesByGenre(genre_id)
+            apiService.getMoviesListByGenre(apiKey, genre_id)
         }
 
 }
