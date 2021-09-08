@@ -1,18 +1,10 @@
-package com.example.movieapp.data.datasource
+package com.example.movieapp.paging
 
-import android.net.Uri
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.movieapp.api.ApiService
-import com.example.movieapp.data.datasource.ApiHelper
-import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.model.Result
-import retrofit2.HttpException
-import java.io.IOException
-import java.security.Key
-
-private const val MOVIE_STARTING_PAGE_INDEX = 1
 
 class MoviePagingSource(
     private val apiService: ApiService,
@@ -44,6 +36,7 @@ class MoviePagingSource(
     }
 
     companion object {
+        private const val MOVIE_STARTING_PAGE_INDEX = 1
         private const val FIRST_PAGE_INDEX = 1
     }
 
