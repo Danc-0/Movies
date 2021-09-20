@@ -27,7 +27,7 @@ class MoviePagingSource(
 
             LoadResult.Page(
                 data = responseList,
-                prevKey = null,
+                prevKey = previousPage,
                 nextKey = nextPage.plus(1)
             )
         } catch (e: Exception) {
@@ -36,7 +36,6 @@ class MoviePagingSource(
     }
 
     companion object {
-        private const val MOVIE_STARTING_PAGE_INDEX = 1
         private const val FIRST_PAGE_INDEX = 1
     }
 

@@ -28,13 +28,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import java.util.*
 
 @AndroidEntryPoint
 @FragmentScoped
-class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener, CategoryAdapter.CallBack {
+class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener,
+    CategoryAdapter.CallBack {
 
     private val TAG = "MainFragment"
     private val viewModel by viewModels<MovieViewModel>()
@@ -52,14 +54,13 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
             when (it) {
                 is Resource.Success -> {
-                    lifecycleScope.launch {
 
-                        viewModel.getMovie("8ed700250305de124bef08dbb686472a").collect{
-
-                            Log.d(TAG, "onViewCreated: $it")
-                            movieAdapter = MovieAdapter( it,this@MainFragment)
-                        }
-
+                        lifecycleScope.launch {
+                            viewModel.getMovie("8ed700250305de124bef08dbb686472a").collectLatest { pagingData ->
+                                movieAdapter.submitData(pagingData)
+                                Log.d(TAG, "onViewCreated1: $pagingData")
+                                
+                            }
 
                         recyclerViewMovies.setHasFixedSize(true)
 
@@ -101,6 +102,14 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         }
     }
 
+    private fun fetchPosts() {
+        lifecycleScope.launch {
+            viewModel.getMovie("").collectLatest { pagingData ->
+                movieAdapter.submitData(pagingData)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         network()
@@ -111,11 +120,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
 
-        if (isConnected){
+        if (isConnected) {
             Toast.makeText(context, "You are back online enjoy", Toast.LENGTH_SHORT).show()
         } else {
             findNavController(requireView()).navigate(R.id.to_noInternetFragment)
-            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -127,16 +137,16 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
     }
 
-    fun movieGenres(){
+    fun movieGenres() {
         viewModel.getMoviesGenre()
 
         viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
 
-            when(it) {
+            when (it) {
 
                 is Resource.Success -> {
 
-                    lifecycleScope.launch{
+                    lifecycleScope.launch {
                         Log.d(TAG, "movieGenres: ${it.value}")
 
                         movieCategory = it.value.genres
@@ -144,7 +154,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
                         categoryAdapter = CategoryAdapter(movieCategory!!, this@MainFragment)
                         RvCategories.setHasFixedSize(true)
 
-                        RvCategories.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                        RvCategories.layoutManager =
+                            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
                         RvCategories.adapter = categoryAdapter
                     }
@@ -164,7 +175,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         })
     }
 
-    fun greetingsMessage(){
+    fun greetingsMessage() {
         val c: Calendar = Calendar.getInstance()
         val timeOfDay: Int = c.get(Calendar.HOUR_OF_DAY)
         var greeting: String? = null
