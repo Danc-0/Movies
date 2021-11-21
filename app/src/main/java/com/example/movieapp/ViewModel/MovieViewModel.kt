@@ -62,4 +62,13 @@ class MovieViewModel @Inject constructor(
         }
     }
 
+    fun getMovies() {
+        viewModelScope.launch {
+
+            _myMovieResponse.value = Resource.Loading
+
+            _myMovieResponse.value = repository.getMovies(1)
+        }
+    }
+
 }

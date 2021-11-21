@@ -14,10 +14,12 @@ import com.example.movieapp.model.Result
 import com.example.movieapp.utils.DiffUtilCallBack
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
+import javax.inject.Inject
 
-class MovieAdapter(
+class MovieAdapter (
+    private val list: List<Result>,
     private val onItemClickListener: OnItemClickListener
-) : PagingDataAdapter<Result, MovieAdapter.MovieViewHolder>(DiffUtilCallBack()) {
+) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater =
@@ -29,7 +31,8 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        val data = list[position]
+        holder.bind(data)
     }
 
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
@@ -65,5 +68,9 @@ class MovieAdapter(
     interface OnItemClickListener {
         fun movieItemClicked(position: Int)
 
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
     }
 }

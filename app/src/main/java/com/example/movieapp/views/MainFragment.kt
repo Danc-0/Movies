@@ -48,52 +48,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        network()
-
-        viewModel.movieResponse.observe(viewLifecycleOwner, {
-
-            when (it) {
-                is Resource.Success -> {
-
-                        lifecycleScope.launch {
-                            viewModel.getMovie("8ed700250305de124bef08dbb686472a").collectLatest { pagingData ->
-                                movieAdapter.submitData(pagingData)
-                                Log.d(TAG, "onViewCreated1: $pagingData")
-                                
-                            }
-
-                        recyclerViewMovies.setHasFixedSize(true)
-
-                        val gridLayoutManager = GridLayoutManager(requireContext(), 2)
-
-                        gridLayoutManager.spanSizeLookup =
-                            object : GridLayoutManager.SpanSizeLookup() {
-                                override fun getSpanSize(position: Int): Int {
-                                    val viewType = movieAdapter.getItemViewType(position)
-                                    return 2
-
-                                }
-                            }
-                        recyclerViewMovies.adapter = movieAdapter
-                    }
-
-                    movieAdapter.apply {
-                        true
-                        notifyDataSetChanged()
-                    }
-                }
-
-                is Resource.Failure -> {
-                    val responseBody: ResponseBody? = it.errorBody
-                    text_error.text = responseBody.toString()
-                    text_error.isVisible = true
-
-                }
-            }
-
-        })
-
         movieGenres()
+
+        movies()
 
         greetingsMessage()
 
@@ -102,31 +59,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         }
     }
 
-    private fun fetchPosts() {
-        lifecycleScope.launch {
-            viewModel.getMovie("").collectLatest { pagingData ->
-                movieAdapter.submitData(pagingData)
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        network()
-    }
 
-    fun network() {
-        val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-        val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
-
-        if (isConnected) {
-            Toast.makeText(context, "You are back online enjoy", Toast.LENGTH_SHORT).show()
-        } else {
-            findNavController(requireView()).navigate(R.id.to_noInternetFragment)
-            Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT)
-                .show()
-        }
     }
 
     override fun movieItemClicked(position: Int) {
@@ -147,7 +82,6 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
                 is Resource.Success -> {
 
                     lifecycleScope.launch {
-                        Log.d(TAG, "movieGenres: ${it.value}")
 
                         movieCategory = it.value.genres
 
@@ -175,7 +109,46 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         })
     }
 
-    fun greetingsMessage() {
+    private fun movies() {
+        viewModel.getMovies()
+
+        viewModel.movieResponse.observe(viewLifecycleOwner, {
+
+            when (it) {
+
+                is Resource.Success -> {
+
+                    lifecycleScope.launch {
+                        Log.d(TAG, "movieWDESGenres: ${it.value}")
+
+                        movieList = it.value.results
+
+                        movieAdapter = MovieAdapter(movieList!!, this@MainFragment)
+                        recyclerViewMovies.setHasFixedSize(true)
+
+                        recyclerViewMovies.layoutManager =
+                            GridLayoutManager(context, 2)
+
+                        recyclerViewMovies.adapter = movieAdapter
+                    }
+
+                    movieAdapter.apply {
+                        true
+                        notifyDataSetChanged()
+                    }
+
+                }
+
+                is Resource.Failure -> {
+
+                }
+                else -> {}
+            }
+
+        })
+    }
+
+    private fun greetingsMessage() {
         val c: Calendar = Calendar.getInstance()
         val timeOfDay: Int = c.get(Calendar.HOUR_OF_DAY)
         var greeting: String? = null
