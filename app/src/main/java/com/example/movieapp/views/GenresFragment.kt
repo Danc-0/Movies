@@ -35,8 +35,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres), ClassificationCategor
     private lateinit var singleCategory: ClassificationCategoryAdapter
     var movieList: List<ResultXX>? = null
     var movieCategory: List<Genre>? = null
-    val handler = Handler()
-    var lastItem: Int = 1
+        var lastItem: Int = 1
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -134,7 +133,6 @@ class GenresFragment : Fragment(R.layout.fragment_genres), ClassificationCategor
 
     override fun sendId(genre: Genre) {
         getMovies(genre.id)
-        Toast.makeText(context, "Hello ${genre.name}", Toast.LENGTH_SHORT).show()
     }
 
 }

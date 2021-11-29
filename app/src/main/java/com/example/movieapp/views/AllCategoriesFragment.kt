@@ -112,7 +112,7 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), Catego
     }
 
     override fun toGenreFrag() {
-        TODO("Not yet implemented")
+
     }
 
 }
