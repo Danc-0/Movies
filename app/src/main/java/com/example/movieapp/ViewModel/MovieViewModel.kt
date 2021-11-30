@@ -23,7 +23,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val repository: MovieRepository, private val apiHelper: ApiService) : ViewModel() {
+class MovieViewModel @Inject constructor(
+    private val repository: MovieRepository,
+    private val apiService: ApiService
+) : ViewModel() {
 
     val _myMovieResponse: MutableLiveData<Resource<MoviesResponse>> = MutableLiveData()
 
@@ -35,18 +38,19 @@ class MovieViewModel @Inject constructor(private val repository: MovieRepository
     val movieGenreResponse: LiveData<Resource<MovieGenres>>
         get() = _myMovieGenreResponse
 
-//    fun getMovies() {
-//        viewModelScope.launch {
-//
-//            _myMovieResponse.value = Resource.Loading
-//
-//            _myMovieResponse.value = repository.getMovies()
-//        }
-//    }
 
     fun getMovie(apiKey: String): Flow<PagingData<Result>> {
-        return Pager (config = PagingConfig(pageSize = 500, maxSize = 10000),
-            pagingSourceFactory = {(MoviePagingSource(apiHelper, apiKey = apiKey))}).flow.cachedIn(viewModelScope)
+        return Pager(config = PagingConfig(
+            pageSize = 50,
+            enablePlaceholders = false,
+            prefetchDistance = 20
+        ),
+            pagingSourceFactory = {
+                (MoviePagingSource(
+                    apiService,
+                    apiKey = apiKey
+                ))
+            }).flow.cachedIn(viewModelScope)
     }
 
     fun getMoviesGenre() {
@@ -55,6 +59,15 @@ class MovieViewModel @Inject constructor(private val repository: MovieRepository
             _myMovieGenreResponse.value = Resource.Loading
 
             _myMovieGenreResponse.value = repository.getMovieGenre("en-US")
+        }
+    }
+
+    fun getMovies() {
+        viewModelScope.launch {
+
+            _myMovieResponse.value = Resource.Loading
+
+            _myMovieResponse.value = repository.getMovies(1)
         }
     }
 

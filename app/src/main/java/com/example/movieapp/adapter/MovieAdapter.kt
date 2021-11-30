@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.R
 import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.model.Result
+import com.example.movieapp.utils.DiffUtilCallBack
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_item.view.*
+import javax.inject.Inject
 
-class MovieAdapter(
-//    diffCallback: DiffUtil.ItemCallback<Result>,
-    private val movieList: PagingData<Result>,
+class MovieAdapter (
+    private val list: List<Result>,
     private val onItemClickListener: OnItemClickListener
-) : PagingDataAdapter<Result, MovieAdapter.MovieViewHolder>(DiffUtilCallback) {
+) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater =
@@ -30,13 +31,9 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val movie = getItem(position)
-        holder.bind(movie)
+        val data = list[position]
+        holder.bind(data)
     }
-
-//    override fun getItemCount(): Int {
-////        return movieList
-//    }
 
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
@@ -73,18 +70,7 @@ class MovieAdapter(
 
     }
 
-    object  DiffUtilCallback: DiffUtil.ItemCallback<Result>() {
-        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
-            return oldItem.id == newItem.id
-                    && oldItem.id == newItem.id
-        }
-
+    override fun getItemCount(): Int {
+        return list.size
     }
-
-
-
 }
