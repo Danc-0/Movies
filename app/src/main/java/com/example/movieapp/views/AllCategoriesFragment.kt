@@ -1,5 +1,6 @@
 package com.example.movieapp.views
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -41,10 +42,11 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), Catego
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun moviesGenre() {
         viewModel.getMoviesGenre()
 
-        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner) {
 
             when (it) {
 
@@ -53,7 +55,8 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), Catego
                     lifecycleScope.launch {
                         movieCategory = it.value.genres
 
-                        categoryAdapter = CategoryAdapter(movieCategory!!, this@AllCategoriesFragment)
+                        categoryAdapter =
+                            CategoryAdapter(movieCategory!!, this@AllCategoriesFragment)
 
                         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
 
@@ -61,9 +64,9 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), Catego
                         rvGenreMovies.adapter = categoryAdapter
                     }
 
-                        categoryAdapter.apply {
-                            true
-                            notifyDataSetChanged()
+                    categoryAdapter.apply {
+                        true
+                        notifyDataSetChanged()
                     }
 
                 }
@@ -71,15 +74,16 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), Catego
                 is Resource.Failure -> {
                     errorResponse(it.errorBody, moviesError)
                 }
+                else -> {}
             }
 
-        })
+        }
     }
 
     fun tvGenre() {
         viewModel.getTVGenre()
 
-        viewModel.myTVGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.myTVGenreResponse.observe(viewLifecycleOwner) {
             when (it) {
 
                 is Resource.Success -> {
@@ -99,9 +103,10 @@ class AllCategoriesFragment : Fragment(R.layout.fragment_all_categories), Catego
 
                 }
 
+                else -> {}
             }
 
-        })
+        }
     }
 
     fun errorResponse(responseBody: ResponseBody?, view: TextView) {

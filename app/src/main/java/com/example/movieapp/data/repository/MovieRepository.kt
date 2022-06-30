@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class MovieRepository @Inject constructor(private val apiService: ApiService) : BaseRepository() {
 
-    val apiKey: String = BuildConfig.API_KEY
+    private val apiKey: String = BuildConfig.API_KEY
 
     suspend fun getMovies(nextPage: Int) =
         safeApiCall {

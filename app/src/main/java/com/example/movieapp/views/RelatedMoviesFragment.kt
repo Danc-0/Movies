@@ -33,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.android.synthetic.main.fragment_related_movies.*
 import kotlinx.android.synthetic.main.fragment_single_movie.movieName
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import kotlin.math.log
@@ -41,7 +42,6 @@ import kotlin.math.log
 @FragmentScoped
 class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies), RelatedMoviesAdapter.CallBack {
 
-    private val TAG = "RelatedMoviesFragment"
     private val viewModel by viewModels<RecommendedMovieViewModel>()
     private lateinit var relatedAdapter: RelatedMoviesAdapter
     private var movieGenre: List<Genre>? = null
@@ -54,7 +54,7 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies), Relate
         super.onViewCreated(view, savedInstanceState)
 
         val bundle = arguments
-        result = bundle!!.getParcelable("Main Movie")
+        result = bundle!!.getParcelable("MainMovie")
 
         movieName.text = result?.title
         releaseDate.text = result?.release_date
@@ -64,66 +64,49 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies), Relate
         voteAverage.text = result?.vote_average.toString()
         result?.original_language?.let { getLanguages(it) }
 
-        recommendedMovies(result!!.id, 1)
+        relatedAdapter = RelatedMoviesAdapter(this)
+        recommendedMovies(result!!.id, "en-US")
 
         movieGenres()
 
     }
 
-    private fun recommendedMovies(movieID: Int, pageNo: Int) {
-        viewModel.getRecommendedMovies(movieID, pageNo)
+    private fun recommendedMovies(movieID: Int, language: String) {
+        rvRelatedMovies.apply {
+            adapter = relatedAdapter
+            clipToPadding = false
+            clipChildren = false
+            offscreenPageLimit = 3
+            getChildAt(0).overScrollMode =
+                RecyclerView.OVER_SCROLL_NEVER
+            val compositePageTransformer = CompositePageTransformer()
+            compositePageTransformer.addTransformer(MarginPageTransformer(40))
 
-        viewModel.recommendedMovieResponse.observe(viewLifecycleOwner, {
-            
-            when(it){
-                
-                is Resource.Success -> {
-                    lifecycleScope.launch{
-                        Log.d(TAG, "movieGenres: ${it.value}")
+            val pageTrans = ViewPager2.PageTransformer { page, position ->
+                val r: Float = 1 - Math.abs(position)
+                page.scaleY = 0.85f + r * 0.15f
+            }
 
-                        relatedMovies = it.value.results
+            compositePageTransformer.addTransformer(pageTrans)
+            rvRelatedMovies.setPageTransformer(compositePageTransformer)
 
-                        relatedAdapter = RelatedMoviesAdapter(relatedMovies!!, rvRelatedMovies, this@RelatedMoviesFragment)
-
-                        rvRelatedMovies.adapter = relatedAdapter
-                        rvRelatedMovies.clipToPadding = false
-                        rvRelatedMovies.clipChildren = false
-                        rvRelatedMovies.offscreenPageLimit = 3
-                        rvRelatedMovies.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-
-                        val compositePageTransformer = CompositePageTransformer()
-                        compositePageTransformer.addTransformer(MarginPageTransformer(40))
-
-                        val pageTrans = object : ViewPager2.PageTransformer {
-                            override fun transformPage(page: View, position: Float) {
-
-                                val r : Float = 1 - Math.abs(position)
-                                page.scaleY = 0.85f + r * 0.15f
-                            }
-                        }
-
-                        compositePageTransformer.addTransformer(pageTrans)
-                        rvRelatedMovies.setPageTransformer(compositePageTransformer)
-
-                        val pageClick = object : ViewPager2.OnPageChangeCallback() {
-                            override fun onPageScrollStateChanged(state: Int) {
-                                super.onPageScrollStateChanged(state)
-                                sliderHandler.removeCallbacks(sliderRunnable)
-                                sliderHandler.postDelayed(sliderRunnable, 3000)
-                            }
-                        }
-
-                        rvRelatedMovies.registerOnPageChangeCallback(pageClick)
-                    }
-
-                }
-                
-                is Resource.Failure -> {
-                    errorResponse(it.errorBody, errorMsg)
+            val pageClick = object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                    sliderHandler.removeCallbacks(sliderRunnable)
+                    sliderHandler.postDelayed(sliderRunnable, 3000)
                 }
             }
-            
-        })
+
+            rvRelatedMovies.registerOnPageChangeCallback(pageClick)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.recommendedMovies(movieID, language).collectLatest {
+                relatedAdapter.submitData(it)
+            }
+        }
+
     }
 
     val sliderRunnable : Runnable = Runnable(){
@@ -153,55 +136,55 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies), Relate
     fun movieGenres() {
         viewModel.getMoviesGenre()
 
-        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner) {
 
-            when(it) {
+            when (it) {
 
                 is Resource.Success -> {
                     lifecycleScope.launch {
                         movieGenre = it.value.genres
 
-                       for (genre in result?.genre_ids!!){
+                        for (genre in result?.genre_ids!!) {
 
-                           for (genreDetails in movieGenre!!){
-                               if (genreDetails.id.equals(genre)){
-                                   genreList.add(genreDetails.name)
+                            for (genreDetails in movieGenre!!) {
+                                if (genreDetails.id.equals(genre)) {
+                                    genreList.add(genreDetails.name)
 
-                               }
-                           }
-                       }
+                                }
+                            }
+                        }
 
                     }
 
-                    Log.d(TAG, "movieGenres: $genreList")
                     val adapter = MovieGenreAdapter(genreList)
                     listGenre.adapter = adapter
-                    listGenre.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                    listGenre.layoutManager =
+                        LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
 
                 }
 
-                is  Resource.Failure -> {
+                is Resource.Failure -> {
 
                 }
 
+                else -> {}
             }
 
-        })
+        }
     }
 
     fun getLanguages(lang: String) {
         viewModel.getLanguages()
 
-        viewModel.movieLanguages.observe(viewLifecycleOwner, {
-            when(it) {
+        viewModel.movieLanguages.observe(viewLifecycleOwner) {
+            when (it) {
 
                 is Resource.Success -> {
                     lifecycleScope.launch {
-                        Log.d(TAG, "getLanguages: ${it.value}")
                         val language: Languages = it.value
                         language.forEach {
-                            if (it.iso_639_1 == lang){
+                            if (it.iso_639_1 == lang) {
                                 original_lang.text = it.english_name
                             }
                         }
@@ -212,8 +195,9 @@ class RelatedMoviesFragment : Fragment(R.layout.fragment_related_movies), Relate
 
                 }
 
+                else -> {}
             }
-        })
+        }
     }
 
     override fun startDialog(view: View) {

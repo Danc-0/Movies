@@ -1,6 +1,9 @@
 package com.example.movieapp.views
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -27,6 +30,8 @@ import com.example.movieapp.model.Result
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,24 +40,22 @@ import java.util.*
 
 @AndroidEntryPoint
 @FragmentScoped
-class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickListener,
+class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClick,
     CategoryAdapter.CallBack {
 
-    private val TAG = "MainFragment"
     private val viewModel by viewModels<MovieViewModel>()
-    private lateinit var movieAdapter: MovieAdapter
+    private var movieAdapter: MovieAdapter? = null
     private lateinit var categoryAdapter: CategoryAdapter
-    var movieList: List<Result>? = null
     var movieCategory: List<Genre>? = null
+    private var gridLayoutSpan = 2
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        movieGenres()
-
-        movies()
-
         greetingsMessage()
+        movieGenres()
+        movieAdapter = MovieAdapter(this@MainFragment)
+        movies()
 
         seeAll.setOnClickListener {
             findNavController(requireView()).navigate(R.id.to_allCategoriesFragment)
@@ -64,18 +67,16 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
 
     }
 
-    override fun movieItemClicked(position: Int) {
-        val movieItem: Result? = movieList?.get(position)
+    override fun movieItemClicked(singleMovie: Result) {
         val bundle = Bundle()
-        bundle.putParcelable("MovieData", movieItem)
+        bundle.putParcelable("MovieData", singleMovie)
         findNavController(requireView()).navigate(R.id.to_singleMovieFragment, bundle)
-
     }
 
     fun movieGenres() {
         viewModel.getMoviesGenre()
 
-        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner) {
 
             when (it) {
 
@@ -104,48 +105,32 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
                 is Resource.Failure -> {
 
                 }
-            }
-
-        })
-    }
-
-    private fun movies() {
-        viewModel.getMovies()
-
-        viewModel.movieResponse.observe(viewLifecycleOwner, {
-
-            when (it) {
-
-                is Resource.Success -> {
-
-                    lifecycleScope.launch {
-                        Log.d(TAG, "movieWDESGenres: ${it.value}")
-
-                        movieList = it.value.results
-
-                        movieAdapter = MovieAdapter(movieList!!, this@MainFragment)
-                        recyclerViewMovies.setHasFixedSize(true)
-
-                        recyclerViewMovies.layoutManager =
-                            GridLayoutManager(context, 2)
-
-                        recyclerViewMovies.adapter = movieAdapter
-                    }
-
-                    movieAdapter.apply {
-                        true
-                        notifyDataSetChanged()
-                    }
-
-                }
-
-                is Resource.Failure -> {
-
-                }
                 else -> {}
             }
 
-        })
+        }
+    }
+
+    private fun movies() {
+        val currentOrientation = resources.configuration.orientation
+        gridLayoutSpan = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            3
+        } else {
+            2
+        }
+
+        recyclerViewMovies.apply {
+            layoutManager = GridLayoutManager(context, gridLayoutSpan)
+            setHasFixedSize(true)
+            adapter = movieAdapter
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.getMovie().collectLatest {
+                movieAdapter?.submitData(it)
+
+            }
+        }
     }
 
     private fun greetingsMessage() {
@@ -153,11 +138,11 @@ class MainFragment : Fragment(R.layout.fragment_main), MovieAdapter.OnItemClickL
         val timeOfDay: Int = c.get(Calendar.HOUR_OF_DAY)
         var greeting: String? = null
 
-        if (timeOfDay >= 0 && timeOfDay < 12) {
+        if (timeOfDay in 0..11) {
             greeting = "Good Morning,"
-        } else if (timeOfDay >= 12 && timeOfDay < 16) {
+        } else if (timeOfDay in 12..15) {
             greeting = "Good Afternoon,"
-        } else if (timeOfDay >= 16 && timeOfDay < 24) {
+        } else if (timeOfDay in 16..23) {
             greeting = "Good Evening,"
         }
 

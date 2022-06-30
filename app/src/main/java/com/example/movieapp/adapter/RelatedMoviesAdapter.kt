@@ -3,23 +3,17 @@ package com.example.movieapp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.example.movieapp.MainActivity
 import com.example.movieapp.R
 import com.example.movieapp.model.ResultX
-import com.example.movieapp.views.VideoPlayerDialogFrag
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.movie_item.view.*
 import kotlinx.android.synthetic.main.related_movie_item.view.*
-import kotlinx.android.synthetic.main.related_movie_item.view.imageViewMovie
-import kotlinx.android.synthetic.main.single_category_item.view.*
 
 
-class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPager2: ViewPager2, private var callBack: CallBack) :
-    RecyclerView.Adapter<RelatedMoviesAdapter.CategoryViewHolder>() {
+class RelatedMoviesAdapter(private var callBack: CallBack) :
+    PagingDataAdapter<ResultX, RelatedMoviesAdapter.CategoryViewHolder>(DataDifferentiator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val layoutInflater =
@@ -32,16 +26,10 @@ class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPage
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val movie: ResultX = list[position]
-        holder.bind(movie)
-
-//        if (position == list.size - 2){
-//            viewPager2.post(runnable)
-//        }
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
+        val movie = getItem(position)
+        if (movie != null) {
+            holder.bind(movie)
+        }
     }
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,14 +48,19 @@ class RelatedMoviesAdapter(private var list: List<ResultX>, private val viewPage
 
     }
 
+    object DataDifferentiator : DiffUtil.ItemCallback<ResultX>() {
+
+        override fun areItemsTheSame(oldItem: ResultX, newItem: ResultX): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: ResultX, newItem: ResultX): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+
     interface CallBack {
         fun startDialog(view: View);
     }
-
-//    val runnable: Runnable = Runnable() {
-//        run {
-////            list.
-//            notifyDataSetChanged()
-//        }
-//    }
 }

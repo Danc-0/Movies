@@ -4,18 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.movieapp.api.ApiService
 import com.example.movieapp.data.datasource.Resource
-import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.data.repository.MovieRepository
-import com.example.movieapp.model.Languages
-import com.example.movieapp.model.MovieGenres
-import com.example.movieapp.model.RecommendedMovieResponse
+import com.example.movieapp.model.*
+import com.example.movieapp.paging.RecommendedMoviePagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecommendedMovieViewModel @Inject constructor(private val repository: MovieRepository) :
+class RecommendedMovieViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val repository: MovieRepository) :
     ViewModel() {
 
     val _myRecommendedMovieResponse: MutableLiveData<Resource<RecommendedMovieResponse>> =
@@ -34,14 +40,14 @@ class RecommendedMovieViewModel @Inject constructor(private val repository: Movi
     val movieLanguages: LiveData<Resource<Languages>>
         get() = _movieLanguages
 
-    fun getRecommendedMovies(movieID: Int, pageNo: Int) {
-        viewModelScope.launch {
-
-            _myRecommendedMovieResponse.value = Resource.Loading
-
-            _myRecommendedMovieResponse.value = repository.getRecommendedMovies(movieID, pageNo, "en-US")
-        }
-    }
+    fun recommendedMovies(movieID: Int, language: String) : Flow<PagingData<ResultX>> =
+        Pager(PagingConfig(
+            pageSize = 20,
+            maxSize = 100,
+            enablePlaceholders = false
+        )) {
+            RecommendedMoviePagingSource(apiService, movieID, language)
+        }.flow.cachedIn(viewModelScope)
 
     fun getMoviesGenre() {
         viewModelScope.launch {
