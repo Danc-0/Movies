@@ -9,12 +9,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.movieapp.api.ApiService
-import com.example.movieapp.data.datasource.ApiHelper
 import com.example.movieapp.data.datasource.Resource
-import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.data.repository.MovieRepository
-import com.example.movieapp.data.repository.MoviesRepository
 import com.example.movieapp.model.MovieGenres
+import com.example.movieapp.model.MoviesResponse
 import com.example.movieapp.model.Result
 import com.example.movieapp.paging.MoviePagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieViewModel @Inject constructor(
     private val repository: MovieRepository,
-    private val apiService: ApiService
+    private val apiService: ApiService,
 ) : ViewModel() {
+
 
     val _myMovieResponse: MutableLiveData<Resource<MoviesResponse>> = MutableLiveData()
 
@@ -39,19 +38,19 @@ class MovieViewModel @Inject constructor(
         get() = _myMovieGenreResponse
 
 
-    fun getMovie(apiKey: String): Flow<PagingData<Result>> {
-        return Pager(config = PagingConfig(
-            pageSize = 50,
-            enablePlaceholders = false,
-            prefetchDistance = 20
-        ),
-            pagingSourceFactory = {
-                (MoviePagingSource(
-                    apiService,
-                    apiKey = apiKey
-                ))
-            }).flow.cachedIn(viewModelScope)
-    }
+    fun getMovie(): Flow<PagingData<Result>> =
+        Pager(
+            PagingConfig(
+                pageSize = 20,
+                maxSize = 100,
+                enablePlaceholders = false,
+            )
+        ) {
+
+            MoviePagingSource(
+                apiService
+            )
+        }.flow.cachedIn(viewModelScope)
 
     fun getMoviesGenre() {
         viewModelScope.launch {
@@ -61,14 +60,4 @@ class MovieViewModel @Inject constructor(
             _myMovieGenreResponse.value = repository.getMovieGenre("en-US")
         }
     }
-
-    fun getMovies() {
-        viewModelScope.launch {
-
-            _myMovieResponse.value = Resource.Loading
-
-            _myMovieResponse.value = repository.getMovies(1)
-        }
-    }
-
 }

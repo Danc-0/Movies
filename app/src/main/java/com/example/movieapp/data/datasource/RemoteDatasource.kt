@@ -29,6 +29,4 @@ class RemoteDatasource @Inject constructor(){
             .create(api)
     }
 
-//    val API_SERVICE: ApiService = getRetrofit().create(ApiService::class.java)
-
 }

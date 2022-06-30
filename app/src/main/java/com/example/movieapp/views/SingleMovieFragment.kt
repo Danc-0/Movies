@@ -73,7 +73,7 @@ class SingleMovieFragment : Fragment(){
 
         relatedMovies.setOnClickListener {
             val bundle = Bundle()
-            bundle.putParcelable("Main Movie", result)
+            bundle.putParcelable("MainMovie", result)
             Navigation.findNavController(requireView()).navigate(R.id.to_relatedMoviesFragment, bundle)
         }
 
@@ -83,9 +83,9 @@ class SingleMovieFragment : Fragment(){
     fun movieGenres() {
         viewModel.getMoviesGenre()
 
-        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner) {
 
-            when(it) {
+            when (it) {
 
                 is Resource.Success -> {
                     lifecycleScope.launch {
@@ -96,13 +96,14 @@ class SingleMovieFragment : Fragment(){
 
                 }
 
-                is  Resource.Failure -> {
+                is Resource.Failure -> {
 
                 }
 
+                else -> {}
             }
 
-        })
+        }
     }
 
 }

@@ -63,20 +63,22 @@ class GenresFragment : Fragment(R.layout.fragment_genres), ClassificationCategor
     fun movieGenres(){
         viewModel.getMoviesGenre()
 
-        viewModel.movieByGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.movieByGenreResponse.observe(viewLifecycleOwner) {
 
-            when(it) {
+            when (it) {
 
                 is Resource.Success -> {
 
-                    lifecycleScope.launch{
+                    lifecycleScope.launch {
 
                         movieCategory = it.value.genres
 
-                        singleCategory = ClassificationCategoryAdapter(movieCategory!!, this@GenresFragment)
+                        singleCategory =
+                            ClassificationCategoryAdapter(movieCategory!!, this@GenresFragment)
                         firstCategories.setHasFixedSize(true)
 
-                        firstCategories.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                        firstCategories.layoutManager =
+                            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
                         firstCategories.adapter = singleCategory
 
@@ -93,15 +95,16 @@ class GenresFragment : Fragment(R.layout.fragment_genres), ClassificationCategor
                 is Resource.Failure -> {
 
                 }
+                else -> {}
             }
 
-        })
+        }
     }
 
     fun getMovies(genre_id: Int) {
         viewModel.getMoviesByGenre(genre_id)
 
-        viewModel.movieGenreResponse.observe(viewLifecycleOwner, {
+        viewModel.movieGenreResponse.observe(viewLifecycleOwner) {
             when (it) {
 
                 is Resource.Success -> {
@@ -127,8 +130,9 @@ class GenresFragment : Fragment(R.layout.fragment_genres), ClassificationCategor
                 is Resource.Failure -> {
 
                 }
+                else -> {}
             }
-        })
+        }
     }
 
     override fun sendId(genre: Genre) {
